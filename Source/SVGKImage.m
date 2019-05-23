@@ -68,6 +68,7 @@
 #if ENABLE_GLOBAL_IMAGE_CACHE_FOR_SVGKIMAGE_IMAGE_NAMED
 @synthesize nameUsedToInstantiate = _nameUsedToInstantiate;
 static NSMutableDictionary* globalSVGKImageCache;
+static dispatch_queue_t serialQueue;
 
 #pragma mark - Respond to low-memory warnings by dumping the global static cache
 +(void) initialize
@@ -167,13 +168,21 @@ static NSMutableDictionary* globalSVGKImageCache;
     {
         globalSVGKImageCache = [NSMutableDictionary new];
     }
+
+    if( serialQueue == nil )
+    {
+        serialQueue = dispatch_queue_create("svgkit.svgkimage", 0);
+    }
     
     SVGKImageCacheLine* cacheLine = [globalSVGKImageCache valueForKey:source.keyForAppleDictionaries];
     if( cacheLine != nil )
     {
         cacheLine.numberOfInstances ++;
-		
-		blockCompleted( cacheLine.mainInstance, /** (TODO: add a way for parse-results to chain each other, and say "I'm the cached version of this OTHER parseresult") original parse result: */ cacheLine.mainInstance.parseErrorsAndWarnings );
+
+        dispatch_async(serialQueue,
+                       ^{
+                           blockCompleted( cacheLine.mainInstance, /** (TODO: add a way for parse-results to chain each other, and say "I'm the cached version of this OTHER parseresult") original parse result: */ cacheLine.mainInstance.parseErrorsAndWarnings );
+                       });
         return nil;
     }
 #endif
@@ -183,7 +192,7 @@ static NSMutableDictionary* globalSVGKImageCache;
 	 */
 	
 	SVGKParser* parser = [SVGKParser newParserWithDefaultSVGKParserExtensions:source];
-	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0),
+	dispatch_async(serialQueue,
 				   ^{
 					   SVGKParseResult* parsedSVG = [parser parseSynchronously];
 					   
