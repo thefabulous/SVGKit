@@ -162,16 +162,16 @@ static dispatch_queue_t serialQueue;
 }
 
 +(SVGKParser *) imageWithSource:(SVGKSource *)source onCompletion:(SVGKImageAsynchronousLoadingDelegate)blockCompleted
-{	
+{
+    if( serialQueue == nil )
+    {
+        serialQueue = dispatch_queue_create("svgkit.svgkimage", 0);
+    }
+    
 #if ENABLE_GLOBAL_IMAGE_CACHE_FOR_SVGKIMAGE_IMAGE_NAMED
     if( globalSVGKImageCache == nil )
     {
         globalSVGKImageCache = [NSMutableDictionary new];
-    }
-
-    if( serialQueue == nil )
-    {
-        serialQueue = dispatch_queue_create("svgkit.svgkimage", 0);
     }
     
     SVGKImageCacheLine* cacheLine = [globalSVGKImageCache valueForKey:source.keyForAppleDictionaries];
