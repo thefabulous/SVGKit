@@ -7,6 +7,11 @@
 //
 
 #import "CALayerWithClipRender.h"
+#import "SVGKDefine.h"
+
+#if SVGKIT_UIKIT
+#import <UIKit/UIKit.h>
+#endif
 
 @interface CALayer (ContentsTransform)
 
@@ -86,8 +91,10 @@
         
         // and mask with that
         CGContextClipToMask(ctx, layer.bounds, maskImage);
-        
-        CFRelease(maskImage);
+
+        if( maskImage != nil ) {
+            CFRelease(maskImage);
+        }
     }
 }
 

@@ -25,6 +25,8 @@
 #import "SVGKExporterUIImage.h" // needed for .UIImage property
 #endif
 
+#import "SVGKDefine_Private.h"
+
 #if ENABLE_GLOBAL_IMAGE_CACHE_FOR_SVGKIMAGE_IMAGE_NAMED
 @interface SVGKImageCacheLine : NSObject
 @property(nonatomic) int numberOfInstances;
@@ -109,7 +111,7 @@ static dispatch_queue_t serialQueue;
 
 + (SVGKImage *)imageNamed:(NSString *)name inBundle:(NSBundle *)bundle
 {
-     return [self imageNamed:name inBundle:[NSBundle mainBundle] withCacheKey:@""];
+     return [self imageNamed:name inBundle:bundle withCacheKey:@""];
 }
 
 + (SVGKImage *)imageNamed:(NSString *)name inBundle:(NSBundle *)bundle withCacheKey:(NSString *)key
@@ -684,7 +686,10 @@ static dispatch_queue_t serialQueue;
     /**
      Special handling for clip-path; need to create their children
      */
-    NSString* clipPath = [element cascadedValueForStylableProperty:@"clip-path" inherit:NO];
+    NSString* clipPath;
+    if ([element isKindOfClass:[SVGElement class]]) {
+        clipPath = [element cascadedValueForStylableProperty:@"clip-path" inherit:NO];
+    }
     if ( [clipPath hasPrefix:@"url"] )
     {
         NSRange idKeyRange = NSMakeRange(5, clipPath.length - 6);
