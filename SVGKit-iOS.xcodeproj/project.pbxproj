@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 54;
+	objectVersion = 46;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -284,16 +284,11 @@
 		32EE379A2173441400A23278 /* SVGKDefine.h in Headers */ = {isa = PBXBuildFile; fileRef = 32EE37962173441400A23278 /* SVGKDefine.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		32F206DB217324BB00427F24 /* SVGKExporterNSImage.h in Headers */ = {isa = PBXBuildFile; fileRef = 32F206D9217324BB00427F24 /* SVGKExporterNSImage.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		32F206DC217324BB00427F24 /* SVGKExporterNSImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 32F206DA217324BB00427F24 /* SVGKExporterNSImage.m */; };
-		4908D04B25DBDD14003F2C34 /* CocoaLumberjack.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4908D04A25DBDD13003F2C34 /* CocoaLumberjack.xcframework */; };
-		4908D04C25DBDD14003F2C34 /* CocoaLumberjack.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4908D04A25DBDD13003F2C34 /* CocoaLumberjack.xcframework */; };
-		4908D04D25DBDD14003F2C34 /* CocoaLumberjack.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4908D04A25DBDD13003F2C34 /* CocoaLumberjack.xcframework */; };
 		4FD821F01AC69F6600E419D3 /* SVGSwitchElement.h in Headers */ = {isa = PBXBuildFile; fileRef = 4FD821EE1AC69F6600E419D3 /* SVGSwitchElement.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		4FD821F11AC69F6600E419D3 /* SVGSwitchElement.m in Sources */ = {isa = PBXBuildFile; fileRef = 4FD821EF1AC69F6600E419D3 /* SVGSwitchElement.m */; };
 		55452BF719EC68A200B75A30 /* libSVGKit-iOS.2.1.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6639618E16145D0400E58CCA /* libSVGKit-iOS.2.1.0.a */; };
 		55452C0E19EC6EC600B75A30 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 6639633F16145DDC00E58CCA /* libxml2.dylib */; };
-		660D50011C4292A6004187D0 /* CocoaLumberjack.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 660D4FF01C42927A004187D0 /* CocoaLumberjack.framework */; };
 		660D50021C4292DB004187D0 /* CocoaLumberjack.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 660D4FF01C42927A004187D0 /* CocoaLumberjack.framework */; };
-		660D50031C429377004187D0 /* CocoaLumberjack.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 660D4FF01C42927A004187D0 /* CocoaLumberjack.framework */; };
 		661ADBF216CC2FBE006F4BC3 /* SVGTextPositioningElement.h in Headers */ = {isa = PBXBuildFile; fileRef = 661ADBF016CC2FBE006F4BC3 /* SVGTextPositioningElement.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		661ADBF316CC2FBE006F4BC3 /* SVGTextPositioningElement.m in Sources */ = {isa = PBXBuildFile; fileRef = 661ADBF116CC2FBE006F4BC3 /* SVGTextPositioningElement.m */; };
 		661ADBF716CC2FCA006F4BC3 /* SVGTextContentElement.h in Headers */ = {isa = PBXBuildFile; fileRef = 661ADBF516CC2FCA006F4BC3 /* SVGTextContentElement.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -1024,7 +1019,6 @@
 			dstPath = "include/${PRODUCT_NAME}";
 			dstSubfolderSpec = 16;
 			files = (
-				660D50031C429377004187D0 /* CocoaLumberjack.framework in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1326,7 +1320,6 @@
 			files = (
 				321EAA6A2171ECDE00640504 /* libxml2.tbd in Frameworks */,
 				321EAA6B2171ECE200640504 /* Foundation.framework in Frameworks */,
-				4908D04D25DBDD14003F2C34 /* CocoaLumberjack.xcframework in Frameworks */,
 				321EAA6D2171ECEC00640504 /* QuartzCore.framework in Frameworks */,
 				321EAA6C2171ECE700640504 /* CoreGraphics.framework in Frameworks */,
 			);
@@ -1354,7 +1347,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				660D50011C4292A6004187D0 /* CocoaLumberjack.framework in Frameworks */,
 				6639634716148DEC00E58CCA /* CoreGraphics.framework in Frameworks */,
 				6639634216148CDF00E58CCA /* QuartzCore.framework in Frameworks */,
 				6639619216145D0400E58CCA /* Foundation.framework in Frameworks */,
@@ -1367,7 +1359,6 @@
 			files = (
 				825CDCC51BDA5314003C1C12 /* libxml2.tbd in Frameworks */,
 				825CDACB1BDA4D14003C1C12 /* CoreGraphics.framework in Frameworks */,
-				4908D04B25DBDD14003F2C34 /* CocoaLumberjack.xcframework in Frameworks */,
 				825CDACA1BDA4D0F003C1C12 /* Foundation.framework in Frameworks */,
 				825CDAC91BDA4D09003C1C12 /* QuartzCore.framework in Frameworks */,
 			);
@@ -1387,7 +1378,6 @@
 			files = (
 				825CDCC61BDA531A003C1C12 /* libxml2.tbd in Frameworks */,
 				825CDAF21BDA4E16003C1C12 /* CoreGraphics.framework in Frameworks */,
-				4908D04C25DBDD14003F2C34 /* CocoaLumberjack.xcframework in Frameworks */,
 				825CDAF01BDA4E0E003C1C12 /* Foundation.framework in Frameworks */,
 				825CDAEE1BDA4E07003C1C12 /* QuartzCore.framework in Frameworks */,
 			);
@@ -3348,11 +3338,7 @@
 				HEADER_SEARCH_PATHS = /usr/include/libxml2;
 				INFOPLIST_FILE = "SVGKitFrameworks/SVGKitFramework-OSX/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/../Frameworks",
-					"@loader_path/Frameworks",
-				);
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
@@ -3411,11 +3397,7 @@
 				HEADER_SEARCH_PATHS = /usr/include/libxml2;
 				INFOPLIST_FILE = "SVGKitFrameworks/SVGKitFramework-OSX/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/../Frameworks",
-					"@loader_path/Frameworks",
-				);
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
@@ -3459,11 +3441,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				INFOPLIST_FILE = "SVGKitFramework-OSXTests/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/../Frameworks",
-					"@loader_path/../Frameworks",
-				);
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
@@ -3505,11 +3483,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				INFOPLIST_FILE = "SVGKitFramework-OSXTests/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/../Frameworks",
-					"@loader_path/../Frameworks",
-				);
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
@@ -3547,11 +3521,7 @@
 				);
 				INFOPLIST_FILE = "SVGKitLibrary/SVGKit-iOS Tests/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MTL_ENABLE_DEBUG_INFO = YES;
 				OTHER_LDFLAGS = (
 					"-ObjC",
@@ -3590,11 +3560,7 @@
 				);
 				INFOPLIST_FILE = "SVGKitLibrary/SVGKit-iOS Tests/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MTL_ENABLE_DEBUG_INFO = NO;
 				OTHER_LDFLAGS = (
 					"-ObjC",
@@ -3684,10 +3650,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				DSTROOT = /tmp/SVGKit_iOS.dst;
 				DYLIB_CURRENT_VERSION = 2.1.0;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/3rd-party-frameworks/CocoaLumberjack-2.2.0/iOS",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "SVGKitLibrary/SVGKit-iOS/SVGKit-Prefix.pch";
 				HEADER_SEARCH_PATHS = /usr/include/libxml2;
@@ -3709,10 +3672,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				DSTROOT = /tmp/SVGKit_iOS.dst;
 				DYLIB_CURRENT_VERSION = 2.1.0;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/3rd-party-frameworks/CocoaLumberjack-2.2.0/iOS",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "SVGKitLibrary/SVGKit-iOS/SVGKit-Prefix.pch";
 				HEADER_SEARCH_PATHS = /usr/include/libxml2;
@@ -3756,11 +3716,7 @@
 				INFOPLIST_FILE = "SVGKitFrameworks/SVGKitFramework-iOS/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "-ObjC";
@@ -3803,11 +3759,7 @@
 				INFOPLIST_FILE = "SVGKitFrameworks/SVGKitFramework-iOS/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MTL_ENABLE_DEBUG_INFO = NO;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = "SVGKit.SVGKitFramework-iOS";
@@ -3842,11 +3794,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				INFOPLIST_FILE = "SVGKitFrameworks/SVGKitFramework-iOSTests/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = "SVGKit.SVGKitFramework-iOSTests";
@@ -3877,11 +3825,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				INFOPLIST_FILE = "SVGKitFrameworks/SVGKitFramework-iOSTests/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = "SVGKit.SVGKitFramework-iOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -3915,11 +3859,7 @@
 				HEADER_SEARCH_PATHS = /usr/include/libxml2;
 				INFOPLIST_FILE = "SVGKitFrameworks/SVGKitFramework-tvOS/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "-ObjC";
@@ -3961,11 +3901,7 @@
 				HEADER_SEARCH_PATHS = /usr/include/libxml2;
 				INFOPLIST_FILE = "SVGKitFrameworks/SVGKitFramework-tvOS/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MTL_ENABLE_DEBUG_INFO = NO;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = "SVGKit.SVGKitFramework-tvOS";
@@ -3993,11 +3929,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				INFOPLIST_FILE = "SVGKitFrameworks/SVGKitFramework-tvOSTests/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = "SVGKit.SVGKitFramework-tvOSTests";
@@ -4021,11 +3953,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				INFOPLIST_FILE = "SVGKitFrameworks/SVGKitFramework-tvOSTests/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = "SVGKit.SVGKitFramework-tvOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
