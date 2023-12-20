@@ -22,8 +22,6 @@
 
 @interface SVGKit : NSObject
 
-+ (void) enableLogging;
-
 @end
 
 //! Project version number for SVGKitFramework-iOS.
