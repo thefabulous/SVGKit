@@ -7,29 +7,17 @@
 #import "SVGKImage.h"
 #import "SVGKSourceURL.h"
 #import "SVGKSourceNSData.h"
+#import "SVGKInlineResource.h"
 
-#if TARGET_OS_IPHONE
+#import "SVGKDefine_Private.h"
 
-#import <UIKit/UIKit.h>
-
-#else
-#endif
-
-#if TARGET_OS_IPHONE
-#define AppleNativeImage UIImage
-#else
-#define AppleNativeImage CIImage
-#endif
-
-#define AppleNativeImageRef AppleNativeImage*
-
-CGImageRef SVGImageCGImage(AppleNativeImageRef img)
+CGImageRef SVGImageCGImage(UIImage *img)
 {
-#if TARGET_OS_IPHONE
+#if SVGKIT_UIKIT
     return img.CGImage;
 #else
-    NSBitmapImageRep* rep = [[[NSBitmapImageRep alloc] initWithCIImage:img] autorelease];
-    return rep.CGImage;
+    CGImageRef cgImage = [img CGImageForProposedRect:NULL context:nil hints:nil];
+    return cgImage;
 #endif
 }
 
@@ -92,23 +80,41 @@ CGImageRef SVGImageCGImage(AppleNativeImageRef img)
 													options:NSRegularExpressionSearch
 													  range:NSMakeRange(0, [_href length]) ];
 		
-		imageData = [NSData dataWithContentsOfURL:[NSURL URLWithString:_href]];
+		// use the format defined at: https://www.rfc-editor.org/rfc/rfc2397
+		NSRange base64Range = [_href rangeOfString: @";base64,"];
+		if (base64Range.location != NSNotFound)
+		{
+			// initialize image data directly from the base64 string if the herf is an inline image encoded as base64.
+			// This will fix the warnings shown console:
+			// nil host used in call to allowsSpecificHTTPSCertificateForHost
+			// nil host used in call to allowsAnyHTTPSCertificateForHost
+			imageData = [[NSData alloc] initWithBase64EncodedString: [_href substringFromIndex:base64Range.location + base64Range.length] options:0];
+		} else
+		{
+			imageData = [NSData dataWithContentsOfURL:[NSURL URLWithString:_href]];
+		}
 	}
 	else
 	{
 		effectiveSource = [self.rootOfCurrentDocumentFragment.source sourceFromRelativePath:_href];
 		NSInputStream *stream = effectiveSource.stream;
-		[stream open]; // if we do this, we CANNOT parse from this source again in future
-        NSError *error = nil;
-		imageData = [NSData dataWithContentsOfStream:stream initialCapacity:NSUIntegerMax error:&error];
-		if( error )
-			SVGKitLogError(@"[%@] ERROR: unable to read stream from %@ into NSData: %@", [self class], _href, error);
+        if (stream) {
+            [stream open]; // if we do this, we CANNOT parse from this source again in future
+            NSError *error = nil;
+            imageData = [NSData dataWithContentsOfStream:stream initialCapacity:NSUIntegerMax error:&error];
+            if( error )
+                SVGKitLogError(@"[%@] ERROR: unable to read stream from %@ into NSData: %@", [self class], _href, error);
+        } else {
+            SVGKitLogError(@"[%@] ERROR: unable to load the source from URL: %@", [self class], _href);
+        }
 	}
 	
 	/** Now we have some raw bytes, try to load using Apple's image loaders
 	 (will fail if the image is an SVG file)
 	 */
-	AppleNativeImageRef image = [AppleNativeImage imageWithData:imageData];
+	UIImage *image;
+	if (imageData)
+		image = [[UIImage alloc] initWithData:imageData];
 	
     if( image == nil ) // NSData doesn't contain an imageformat Apple supports; might be an SVG instead
     {
@@ -140,16 +146,24 @@ CGImageRef SVGImageCGImage(AppleNativeImageRef img)
                 image = svg.UIImage;
             }
         }
+        
+        // If still fail, use the broken image placeholder
+        if (!image) {
+            image = SVGKGetBrokenImageRepresentation();
+        }
     }
     
 	if( image != nil )
 	{
         CGRect frame = CGRectMake(_x, _y, _width, _height);
-        
-        if( imageData )
-            self.viewBox = SVGRectMake(0, 0, image.size.width, image.size.height);
-        else
-            self.viewBox = SVGRectMake(0, 0, _width, _height);
+
+        // only use image size if we don't have "width" or "height"
+        self.viewBox = SVGRectMake(
+            0,
+            0,
+            ((_width != 0) || !imageData) ? _width : image.size.width,
+            ((_height != 0) || !imageData) ? _height : image.size.height
+        );
         
         CGImageRef imageRef = SVGImageCGImage(image);
         BOOL imageRefHasBeenRetained = false; // only one codepath CREATES a new image, because of Apple's API; the rest use an existing reference

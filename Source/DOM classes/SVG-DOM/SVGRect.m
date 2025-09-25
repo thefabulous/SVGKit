@@ -1,11 +1,12 @@
 #import "SVGRect.h"
+#import "SVGKDefine_Private.h"
 
 BOOL SVGRectIsInitialized( SVGRect rect )
 {
 	return rect.x != -1 || rect.y != -1 || rect.width != -1 || rect.height != -1;
 }
 
-SVGRect SVGRectUninitialized()
+SVGRect SVGRectUninitialized( void )
 {
 	return SVGRectMake( -1, -1, -1, -1 );
 }
@@ -28,4 +29,13 @@ CGSize CGSizeFromSVGRect( SVGRect rect )
 	CGSize result = CGSizeMake( rect.width, rect.height );
 	
 	return result;
+}
+
+NSString * NSStringFromSVGRect( SVGRect rect ) {
+    CGRect cgRect = CGRectFromSVGRect(rect);
+#if SVGKIT_MAC
+    return NSStringFromRect(cgRect);
+#else
+    return NSStringFromCGRect(cgRect);
+#endif
 }

@@ -19,8 +19,13 @@
 #import "SVGKSourceNSData.h" // for convenience constructors that load from raw incoming NSData
 
 #import "CALayer+RecursiveClone.h"
-
+#if SVGKIT_MAC
+#import "SVGKExporterNSImage.h" // needed for .NSImage property
+#else
 #import "SVGKExporterUIImage.h" // needed for .UIImage property
+#endif
+
+#import "SVGKDefine_Private.h"
 
 #if ENABLE_GLOBAL_IMAGE_CACHE_FOR_SVGKIMAGE_IMAGE_NAMED
 @interface SVGKImageCacheLine : NSObject
@@ -71,32 +76,53 @@ static NSMutableDictionary* globalSVGKImageCache;
 {
 	if( self == [SVGKImage class]) // Have to protect against subclasses ADDITIONALLY calling this, as a "[super initialize] line
 	{
+#if SVGKIT_UIKIT
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveMemoryWarningOrBackgroundNotification:) name:UIApplicationDidReceiveMemoryWarningNotification object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveMemoryWarningOrBackgroundNotification:) name:UIApplicationDidEnterBackgroundNotification object:nil];
+#endif
 	}
+}
+
++(void) clearCache {
+	if ([globalSVGKImageCache count] == 0) return;
+	
+	SVGKitLogWarn(@"[%@] Low-mem, background or api clear; purging cache of %lu SVGKImages...", self, (unsigned long)[globalSVGKImageCache count] );
+	
+	[globalSVGKImageCache removeAllObjects]; // once they leave the cache, if they are no longer referred to, they should automatically dealloc
 }
 
 +(void) didReceiveMemoryWarningOrBackgroundNotification:(NSNotification*) notification
 {
-	if ([globalSVGKImageCache count] == 0) return;
-	
-	SVGKitLogWarn(@"[%@] Low-mem or background; purging cache of %lu SVGKImages...", self, (unsigned long)[globalSVGKImageCache count] );
-	
-	[globalSVGKImageCache removeAllObjects]; // once they leave the cache, if they are no longer referred to, they should automatically dealloc
+	[self clearCache];
 }
 #endif
 
 #pragma mark - Convenience initializers
++ (SVGKImage *)imageNamed:(NSString *)name
+{
+    return [self imageNamed:name inBundle:[NSBundle mainBundle] withCacheKey:@""];
+}
+
++ (SVGKImage *)imageNamed:(NSString *)name withCacheKey:(NSString *)key
+{
+    return [self imageNamed:name inBundle:[NSBundle mainBundle] withCacheKey:key];
+}
 
 + (SVGKImage *)imageNamed:(NSString *)name inBundle:(NSBundle *)bundle
+{
+     return [self imageNamed:name inBundle:bundle withCacheKey:@""];
+}
+
++ (SVGKImage *)imageNamed:(NSString *)name inBundle:(NSBundle *)bundle withCacheKey:(NSString *)key
 {	
 #if ENABLE_GLOBAL_IMAGE_CACHE_FOR_SVGKIMAGE_IMAGE_NAMED
+    NSString* cacheName = [key length] > 0 ? key : name;
     if( globalSVGKImageCache == nil )
     {
         globalSVGKImageCache = [NSMutableDictionary new];
     }
     
-    SVGKImageCacheLine* cacheLine = [globalSVGKImageCache valueForKey:name];
+    SVGKImageCacheLine* cacheLine = [globalSVGKImageCache valueForKey:cacheName];
     if( cacheLine != nil )
     {
         cacheLine.numberOfInstances ++;
@@ -115,12 +141,12 @@ static NSMutableDictionary* globalSVGKImageCache;
 	if( result != nil )
 	{
     result->cameFromGlobalCache = TRUE;
-    result.nameUsedToInstantiate = name;
+    result.nameUsedToInstantiate = cacheName;
     
     SVGKImageCacheLine* newCacheLine = [[SVGKImageCacheLine alloc] init];
     newCacheLine.mainInstance = result;
     
-    [globalSVGKImageCache setValue:newCacheLine forKey:name];
+    [globalSVGKImageCache setValue:newCacheLine forKey:cacheName];
 	}
 	else
 	{
@@ -129,11 +155,6 @@ static NSMutableDictionary* globalSVGKImageCache;
 #endif
     
     return result;
-}
-
-+ (SVGKImage *)imageNamed:(NSString *)name
-{
-    return [self imageNamed:name inBundle:[NSBundle mainBundle]];
 }
 
 +(SVGKParser *) imageAsynchronouslyNamed:(NSString *)name onCompletion:(SVGKImageAsynchronousLoadingDelegate)blockCompleted
@@ -473,7 +494,11 @@ static NSMutableDictionary* globalSVGKImageCache;
 
 -(UIImage *)UIImage
 {
-	return [SVGKExporterUIImage exportAsUIImage:self antiAliased:TRUE curveFlatnessFactor:1.0f interpolationQuality:kCGInterpolationDefault]; // Apple defaults
+#if SVGKIT_MAC
+	return [SVGKExporterNSImage exportAsNSImage:self antiAliased:TRUE curveFlatnessFactor:1.0f interpolationQuality:kCGInterpolationDefault]; // Apple defaults
+#else
+    return [SVGKExporterUIImage exportAsUIImage:self antiAliased:TRUE curveFlatnessFactor:1.0f interpolationQuality:kCGInterpolationDefault]; // Apple defaults
+#endif
 }
 
 // the these draw the image 'right side up' in the usual coordinate system with 'point' being the top-left.
@@ -503,7 +528,7 @@ static NSMutableDictionary* globalSVGKImageCache;
 	NSAssert( FALSE, @"Method unsupported / not yet implemented by SVGKit" );
 }
 
-#if TARGET_OS_IPHONE
+#if SVGKIT_UIKIT
 + (UIImage *)animatedImageNamed:(NSString *)name duration:(NSTimeInterval)duration  // read sequnce of files with suffix starting at 0 or 1
 {
 	NSAssert( FALSE, @"Method unsupported / not yet implemented by SVGKit" );
@@ -640,9 +665,11 @@ static NSMutableDictionary* globalSVGKImageCache;
 		saveParentNode = element.parentNode;
 		element.parentNode = useElement;
 
-		NodeList* nodeList = [[NodeList alloc] init];
-		[nodeList.internalArray addObject:element];
-		childNodes = nodeList;
+        if (element) {
+            NodeList* nodeList = [[NodeList alloc] init];
+            [nodeList.internalArray addObject:element];
+            childNodes = nodeList;
+        }
     }
     else
     if ( [element isKindOfClass:[SVGSwitchElement class]] )
@@ -652,7 +679,10 @@ static NSMutableDictionary* globalSVGKImageCache;
     /**
      Special handling for clip-path; need to create their children
      */
-    NSString* clipPath = [element cascadedValueForStylableProperty:@"clip-path" inherit:NO];
+    NSString* clipPath;
+    if ([element isKindOfClass:[SVGElement class]]) {
+        clipPath = [element cascadedValueForStylableProperty:@"clip-path" inherit:NO];
+    }
     if ( [clipPath hasPrefix:@"url"] )
     {
         NSRange idKeyRange = NSMakeRange(5, clipPath.length - 6);

@@ -20,6 +20,10 @@
 
 #import "SVGTransformable.h"
 
+#import "SVGKDefine_Private.h"
+
+#import "NSCharacterSet+SVGKExtensions.h"
+
 @interface SVGElement ()
 
 @property (nonatomic, copy) NSString *stringValue;
@@ -254,9 +258,6 @@
                 value = [self getAttribute:@"gradientTransform"];
             }
 		
-#if !(TARGET_OS_IPHONE) && ( !defined( __MAC_10_7 ) || __MAC_OS_X_VERSION_MIN_REQUIRED < __MAC_10_6_7 )
-		SVGKitLogVerbose(@"[%@] WARNING: the transform attribute requires OS X 10.7 or above (we need Regular Expressions! Apple was slow to add them :( ). Ignoring TRANSFORMs in SVG!", [self class] );
-#else
 		NSError* error = nil;
 		NSRegularExpression* regexpTransformListItem = [NSRegularExpression regularExpressionWithPattern:@"[^\\(\\),]*\\([^\\)]*" options:0 error:&error]; // anything except space and brackets ... followed by anything except open bracket ... plus anything until you hit a close bracket
 		
@@ -273,12 +274,19 @@
 				SVGKitLogError(@"[%@] ERROR: input file is illegal, has an item in the SVG transform attribute which has no open-bracket. Item = %@, transform attribute value = %@", [self class], transformString, value );
 				return;
 			}
-			NSString* command = [transformString substringToIndex:loc.location];
+            NSString* command = [transformString substringToIndex:loc.location];
             NSString* rawParametersString = [transformString substringFromIndex:loc.location+1];
-			NSArray* parameterStrings = [rawParametersString componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@", "]];
-			
-			/** if you get ", " (comma AND space), Apple sends you an extra 0-length match - "" - between your args. We strip that here */
-			parameterStrings = [parameterStrings filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"length > 0"]];
+            NSMutableArray *parameterStrings = [NSMutableArray array];
+            NSScanner *scanner = [[NSScanner alloc] initWithString:rawParametersString];
+            CGFloat currentValue;
+
+            NSCharacterSet *commaAndWhitespace = [NSCharacterSet characterSetWithCharactersInString:@", "];
+            while (![scanner isAtEnd]) {
+                if ([scanner scanDouble:&currentValue]) {
+                    [parameterStrings addObject:[@(currentValue) stringValue]];
+                }
+                [scanner scanCharactersFromSet:commaAndWhitespace intoString:NULL];
+            }
 			
 			//EXTREME DEBUG: SVGKitLogVerbose(@"[%@] DEBUG: found parameters = %@", [self class], parameterStrings);
 			
@@ -375,7 +383,6 @@
 		}];
 		
 		//DEBUG: SVGKitLogVerbose(@"[%@] Set local / relative transform = (%2.2f, %2.2f // %2.2f, %2.2f) + (%2.2f, %2.2f translate)", [self class], selfTransformable.transform.a, selfTransformable.transform.b, selfTransformable.transform.c, selfTransformable.transform.d, selfTransformable.transform.tx, selfTransformable.transform.ty );
-#endif
 		}
 	}
 
@@ -445,8 +452,7 @@
 
 - (NSRange) nextSelectorRangeFromText:(NSString *) selectorText startFrom:(NSRange) previous
 {
-    NSMutableCharacterSet *identifier = [NSMutableCharacterSet alphanumericCharacterSet];
-    [identifier addCharactersInString:@"-_"];
+    NSCharacterSet *identifier = [NSCharacterSet SVGAlphanumericAndDashesCharacterSet];
 	NSCharacterSet *selectorStart = [NSCharacterSet characterSetWithCharactersInString:@"#."];
     
     NSInteger start = -1;
@@ -485,16 +491,24 @@
     {
         if( element.className != nil )
         {
+            NSScanner *classNameScanner = [NSScanner scannerWithString:element.className];
+            NSCharacterSet *whitespaceAndCommaSet = [NSCharacterSet SVGWhitespaceAndCommaCharacterSet];
+            NSString *substring;
+            
             selector = [selector substringFromIndex:1];
             __block BOOL matched = NO;
-            [element.className enumerateSubstringsInRange:NSMakeRange(0, element.className.length) options:NSStringEnumerationByWords usingBlock:^(NSString *substring, NSRange substringRange, NSRange enclosingRange, BOOL *stop)
-             {
-                 if( [substring isEqualToString:selector] )
-                 {
-                     matched = YES;
-                     *stop = YES;
-                 }
-             }];
+
+            while ([classNameScanner scanUpToCharactersFromSet:whitespaceAndCommaSet intoString:&substring])
+            {
+                if( [substring isEqualToString:selector] )
+                {
+                    matched = YES;
+                    break;
+                }
+				
+                if (!classNameScanner.isAtEnd)
+                    classNameScanner.scanLocation = classNameScanner.scanLocation+1L;
+            }
             if( matched )
             {
                 *specificity += 100;
