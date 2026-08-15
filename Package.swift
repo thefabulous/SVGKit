@@ -44,6 +44,13 @@ let package = Package(
                 "SVGKit"
             ],
             path: "Source/SwiftUI additions"
+        ),
+        .testTarget(
+            name: "SVGKitTests",
+            dependencies: [
+                "SVGKit"
+            ],
+            path: "Tests"
         )
     ]
 )

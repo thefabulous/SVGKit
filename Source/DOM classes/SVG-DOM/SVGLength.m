@@ -302,6 +302,9 @@ static float cachedDevicePixelsPerInch;
         
         // iPhone 16 Plus, ppi 460/325
         @"iPhone17,4": @460,
+
+        // iPhone 17 Pro, ppi 460/325
+        @"iPhone18,1": @460,
         
         /// iPad
         // iPad 1
@@ -573,18 +576,8 @@ static float cachedDevicePixelsPerInch;
     return modelsPPIManifest;
 }
 
-+(float) pixelsPerInchForCurrentDevice
++(float) pixelsPerInchForPlatform:(NSString *)platform
 {
-    
-    /** Using this as reference: http://en.wikipedia.org/wiki/Retina_Display and https://theapplewiki.com/wiki/Models
-      */
-    size_t size;
-    sysctlbyname("hw.machine", NULL, &size, NULL, 0);
-    char *machine = malloc(size);
-    sysctlbyname("hw.machine", machine, &size, NULL, 0);
-    NSString *platform = [NSString stringWithUTF8String:machine];
-    free(machine);
-    
     NSNumber *value = [[self modelsPPIManifest] objectForKey:platform];
     if (value) {
         return [value floatValue];
@@ -592,25 +585,25 @@ static float cachedDevicePixelsPerInch;
     
     if( [platform hasPrefix:@"iPhone"]) // catch-all for higher-end devices not yet existing
     {
-        NSAssert(FALSE, @"Update your source code or disable assertions: you are using an iPhone that didn't exist when this code was written, we have no idea what the pixel count per inch is!");
+        SVGKitLogWarn(@"[%@] WARNING: unknown iPhone model %@; using the default PPI", [self class], platform);
         return 401.0f;
     }
     
     if( [platform hasPrefix:@"iPod"]) // catch-all for higher-end devices not yet existing
     {
-        NSAssert(FALSE, @"Update your source code or disable assertions: you are using an iPod that didn't exist when this code was written, we have no idea what the pixel count per inch is!");
+        SVGKitLogWarn(@"[%@] WARNING: unknown iPod model %@; using the default PPI", [self class], platform);
         return 326.0f;
     }
 
     if( [platform hasPrefix:@"iPad"]) // catch-all for higher-end devices not yet existing
     {
-        NSAssert(FALSE, @"Update your source code or disable assertions: you are using an iPad that didn't exist when this code was written, we have no idea what the pixel count per inch is!");
+        SVGKitLogWarn(@"[%@] WARNING: unknown iPad model %@; using the default PPI", [self class], platform);
         return 264.0f;
     }
     
     if( [platform hasPrefix:@"iWatch"]) // catch-all for higher-end devices not yet existing
     {
-        NSAssert(FALSE, @"Update your source code or disable assertions: you are using an iWatch that didn't exist when this code was written, we have no idea what the pixel count per inch is!");
+        SVGKitLogWarn(@"[%@] WARNING: unknown iWatch model %@; using the default PPI", [self class], platform);
         return 326.0f;
     }
     
@@ -620,8 +613,22 @@ static float cachedDevicePixelsPerInch;
         return 132.0f; // Simulator, running on desktop machine
     }
 
-    NSAssert(FALSE, @"Cannot determine the PPI values for current device; returning 0.0f - hopefully this will crash your code (you CANNOT run SVG's that use CM/IN/MM etc until you fix this)" );
-    return 0.0f; // Bet you'll get a divide by zero here...
+    SVGKitLogWarn(@"[%@] WARNING: unknown device model %@; using the default PPI", [self class], platform);
+    return 132.0f;
+}
+
++(float) pixelsPerInchForCurrentDevice
+{
+    /** Using this as reference: http://en.wikipedia.org/wiki/Retina_Display and https://theapplewiki.com/wiki/Models
+      */
+    size_t size;
+    sysctlbyname("hw.machine", NULL, &size, NULL, 0);
+    char *machine = malloc(size);
+    sysctlbyname("hw.machine", machine, &size, NULL, 0);
+    NSString *platform = [NSString stringWithUTF8String:machine];
+    free(machine);
+
+    return [self pixelsPerInchForPlatform:platform];
 }
 
 @end
